@@ -8,7 +8,7 @@ from fastapi import FastAPI
 app = FastAPI()
 
 from pydantic import BaseModel
-from example import image_create
+from utils.karlo_service import image_create
 
 # 사진을 요청하기 위해서 작성한 텍스트를 받기 위한 클래스
 class Content(BaseModel):
@@ -24,4 +24,4 @@ async def create_item(item: Content):
 
 # uvicorn
 if __name__ == '__main__' :
-    uvicorn.run('main:app', host='0.0.0.0', port=os.getenv('PORT'), access_log=True, reload=True, reload_dirs='./main.py')
+    uvicorn.run('main:app', host='0.0.0.0', port=int(os.getenv('PORT')), access_log=True, reload=True, reload_dirs='./main.py')
