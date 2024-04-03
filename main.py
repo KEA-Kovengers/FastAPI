@@ -9,6 +9,7 @@ app = FastAPI()
 
 from pydantic import BaseModel
 from utils.karlo_service import image_create
+from utils.gemini_service import find_typo, generate_hashtag, generate_text
 
 import pymongo
 
@@ -30,16 +31,16 @@ def create_item(item: Content):
 
 @app.get("/test")
 def text():
-    collection = db["test"]
-    new_document = {
-        "name": "count_eeho",
-        "age": 30,
-        "city": "Seoul"
-    }
-    cursor = collection.insert_one(new_document)
+    # collection = db["test"]
+    # new_document = {
+    #     "name": "count_eeho",
+    #     "age": 30,
+    #     "city": "Seoul"
+    # }
+    # cursor = collection.insert_one(new_document)
     # 첫 번째 결과 가져오기
-    first_document = cursor.next()
-    print(first_document)
+    # first_document = cursor.next()
+    # print(first_document)
     return "123"
 
 # uvicorn
