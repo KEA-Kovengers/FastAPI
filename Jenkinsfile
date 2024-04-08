@@ -10,7 +10,6 @@ pipeline {
         stage('Build FastAPI app') {
             steps {
                 sh 'pip install -r requirements.txt' // 필요한 패키지 설치
-                sh 'uvicorn main:app --reload' // FastAPI 애플리케이션 실행
             }
         }
         stage('Build Docker images') {
