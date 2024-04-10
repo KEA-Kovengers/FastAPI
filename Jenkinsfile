@@ -7,11 +7,6 @@ pipeline {
         VERSION = "${env.BUILD_NUMBER}" // Jenkins 빌드 번호를 버전으로 사용합니다.
     }
     stages {
-        // stage('Build FastAPI app') {
-        //     steps {
-        //         sh 'pip install -r requirements.txt' // 필요한 패키지 설치
-        //     }
-        // }
         stage('Build Docker images') {
             steps {
                 script {
