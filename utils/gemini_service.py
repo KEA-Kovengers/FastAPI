@@ -29,13 +29,13 @@ def generate_hashtag(markdown_text):
 
     # Constructing the prompt
     prompt = f'''
-    Summarize the following markdown text into hashtags with up to five words to represent the essence of the sentence.
+    Summarize the following markdown text into hashtags with up to only one word to represent the essence of the sentence.
 
     **Markdown Text**: "{markdown_text}"
     
     **Instructions**:
     1. Generate hashtags in word format to represent the essence of the sentence.
-    2. Use up to five words per hashtag.
+    2. Use up to only one word per hashtag.
     3. Each hashtag should capture a key aspect of the sentence's meaning.
     4. Return the result in JSON format.
     5. Speak in Korean.
@@ -43,6 +43,8 @@ def generate_hashtag(markdown_text):
     **Example Text**: "{example_text}"
     **Example Hashtags**: {example_hashtags}
     
+    Enter the key of JSON in English as follows:
+    key must be written in ENGLISH!!
     **Example Output**:
     {{
         "hashtags": {example_hashtags}
@@ -53,7 +55,7 @@ def generate_hashtag(markdown_text):
     response = model.generate_content(prompt)
     
     # Returning the text response from the model
-    return response.text
+    return response.text.replace('```json', '').replace('```', '')
 
 
 def generate_text(keywords):
@@ -68,16 +70,22 @@ def generate_text(keywords):
     2. The sentence should be written in English.
     3. Ensure that the sentence makes sense and is grammatically correct.
     4. Generate only one sentence.
-    5. Speak in Korean.
+    5. Return the result in JSON format.
+    6. Speak in Korean.
     
-    **Example**: "The dog is playing happily in the park."
+    Enter the key of JSON in English as follows:
+    key must be written in ENGLISH!!
+    **Example Output**:
+    {{
+        "sentence": "The dog is playing happily in the park."
+    }}
     '''
 
     # Sending the prompt to the GPT model and getting the response
     response = model.generate_content(prompt)
     
     # Returning the text response from the model
-    return response.text
+    return response.text.replace('```json', '').replace('```', '')
 
 # def find_typo(sentence):
 #     # 프롬프트 생성
@@ -111,7 +119,75 @@ def find_typo(sentence):
     2. Identify and correct any spelling or typographical errors present in the sentence.
     3. Ensure that the corrected sentence is grammatically correct and makes sense in context.
     4. Provide the corrected version of the sentence.
-    5. Speak in Korean.
+    5. Return the result in JSON format.
+    6. Speak in Korean.
+    
+    Enter the key of JSON in English as follows:
+    key must be written in ENGLISH!!
+    **Example Output**:
+    {{
+        "sentence": "The dog is palying happily in the prak.",
+        "correct": "The dog is playing happily in the park."
+    }}
     '''
     response = model.generate_content(prompt)
-    return response.text
+
+    return response.text.replace('```json', '').replace('```', '')
+
+def summarize_blog_post(blog_post):
+    # Constructing the prompt
+    prompt = f'''
+    Summarize the following blog post:
+    
+    "{blog_post}"
+    
+    **Instructions**:
+    1. Read the provided blog post carefully.
+    2. Summarize the main points and key information.
+    3. Ensure that the summary is concise and well-written.
+    4. Generate only one summary.
+    5. Return the result in JSON format.
+    6. Speak in Korean.
+    
+    Enter the key of JSON in English as follows:
+    key must be written in ENGLISH!!
+    **Example Output**:
+    {{
+        "summary": "The summary of the blog post goes here."
+    }}
+    '''
+
+    # Sending the prompt to the GPT model and getting the response
+    response = model.generate_content(prompt)
+    
+    # Returning the text response from the model
+    return response.text.replace('```json', '').replace('```', '')
+
+def translate_korean_to_english(korean_text):
+    # Constructing the prompt
+    prompt = f'''
+    Translate the following Korean text into English:
+    
+    "{korean_text}"
+    
+    **Instructions**:
+    1. Carefully read the provided Korean text.
+    2. Translate it into English while maintaining the original meaning.
+    3. Ensure that the translation is grammatically correct and natural-sounding.
+    4. Generate only one translation.
+    5. Return the result in JSON format.
+    6. Speak in Korean for the input text and in English for the translation.
+    
+    Enter the key of JSON in English as follows:
+    key must be written in ENGLISH!!
+    **Example Output**:
+    {{
+        "translation": "The translation of the Korean text goes here."
+    }}
+    '''
+
+    # Sending the prompt to the GPT model and getting the response
+    response = model.generate_content(prompt)
+    
+    # Returning the text response from the model
+    return response.text.replace('```json', '').replace('```', '')
