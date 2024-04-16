@@ -8,9 +8,19 @@ api = Karlo(service_key = os.getenv("KAKAO_RESTAPI_KEY"))
 def image_create(text):
     # 프롬프트에 사용할 제시어
     # text = "Cute magical flyng cat, soft golden fur, fantasy art drawn by Pixar concept artist, Toy Story main character, clear and bright eyes, sharp nose"
+    thumbnail_prompt = f'''
+    Generate an image that would be suitable as a blog thumbnail based on the provided summary.
+    
+    **Summary**: "{text}"
+    
+    **Instructions**:
+    1. Use the provided summary to generate an image that would capture readers' interest.
+    2. Ensure that the image is visually appealing and relevant to the content of the blog post.
+    3. Generate only one image.
+    '''
 
     # 이미지 생성하기 REST API 호출
-    img_dict = api.text_to_image(text, 1)
+    img_dict = api.text_to_image(thumbnail_prompt, 1)
 
     # 생성된 이미지 정보
     img_str = img_dict.get("images")[0].get('image')
