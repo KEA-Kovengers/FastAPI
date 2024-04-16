@@ -88,6 +88,69 @@ async def create_item(item: Item):
     return item
 
 
+class TextPayload(BaseModel):
+    text: str
+
+@app.post("/generate/hashtag")
+async def process_text(payload: TextPayload):
+    # Access the text from the payload
+    text = payload.text
+    print(text)
+    hashtags = generate_hashtag(text)
+    print("Hashtags:")
+    print(hashtags)
+    # Here you can perform any processing on the text
+    # For example, you can simply return it
+    return hashtags
+
+@app.post("/generate/text")
+async def process_text(payload: TextPayload):
+    # Access the text from the payload
+    text = payload.text
+    print(text)
+    generated_text = generate_text(text)
+    print("Generated text:")
+    print(generated_text)
+    # Here you can perform any processing on the text
+    # For example, you can simply return it
+    return generated_text
+
+@app.post("/modify/spell")
+async def process_text(payload: TextPayload):
+    # Access the text from the payload
+    text = payload.text
+    print(text)
+    typo_results = find_typo(text)
+    print("Typo results:")
+    print(typo_results)
+    # Here you can perform any processing on the text
+    # For example, you can simply return it
+    return typo_results
+
+@app.post("/generate/summary")
+async def process_text(payload: TextPayload):
+    # Access the text from the payload
+    text = payload.text
+    print(text)
+
+    hashtags = summarize_blog_post(text)
+    # print("Hashtags:")
+    # json_data = json.loads(hashtags)
+    # print(hashtags)
+    # hashtags = generate_hashtag(json_data['summary'])
+    # print("Hashtags:")
+    # print(hashtags)
+    # english = translate_korean_to_english(json_data['summary'])
+    # print(english)
+    # json_data = json.loads(english)
+
+    # image_create(json_data['translation'])
+    # english = translate_korean_to_english(hashtags)
+    # print(english)
+    # json_data = json.loads(english)
+    # image_create(hashtags)
+    return hashtags
+
 # test
 @app.get("/api/get/token")
 def get_token():
