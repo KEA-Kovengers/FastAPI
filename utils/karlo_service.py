@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv('fast_sub/.env')
 
 from PyKakao import Karlo
 api = Karlo(service_key = os.getenv("KAKAO_RESTAPI_KEY"))

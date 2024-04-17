@@ -2,7 +2,7 @@ from http.client import HTTPException
 import json
 import os
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv('/fast_sub/.env')
 
 from typing import List, Optional, Union
 import uvicorn
@@ -27,6 +27,7 @@ db = client[os.getenv("CLUSTER_NAME")]
 origins = [
     "http://localhost",
     "http://localhost:8000",
+    "*",
 ]
 
 # CORS 미들웨어 설정

@@ -2,6 +2,8 @@ import os
 import vertexai
 import vertexai.preview
 from vertexai.preview.generative_models import GenerativeModel
+from dotenv import load_dotenv
+load_dotenv('fast_sub/.env')
 vertexai.init(project=os.getenv("PROJECT_ID"), location=os.getenv("LOCATION"))
 
 import vertexai
