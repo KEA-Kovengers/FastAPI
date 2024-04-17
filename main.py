@@ -13,6 +13,7 @@ from pydantic import BaseModel
 from utils.karlo_service import image_create
 from utils.gemini_service import find_typo, generate_hashtag, generate_text, summarize_blog_post, translate_korean_to_english
 from utils.jwt_service import encode, decode
+from fastapi.middleware.cors import CORSMiddleware
 
 import pymongo
 
@@ -22,6 +23,20 @@ conn = redis.Redis()
 # MongoDB에 연결할 클라이언트 생성
 client = pymongo.MongoClient(os.getenv("MONGO_URL"))
 db = client[os.getenv("CLUSTER_NAME")]
+
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+]
+
+# CORS 미들웨어 설정
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # 허용할 Origin(출처) 리스트
+    allow_credentials=True,  # 인증 정보 허용 여부
+    allow_methods=["GET", "POST", "PUT", "DELETE"],  # 허용할 HTTP 메서드
+    allow_headers=["Authorization", "Content-Type", "Accept"],  # 허용할 헤더
+)
 
 @app.get("/test")
 def text():
