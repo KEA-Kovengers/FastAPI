@@ -2,7 +2,7 @@ from http.client import HTTPException
 import json
 import os
 from dotenv import load_dotenv
-load_dotenv('/fast_sub/.env')
+load_dotenv('/Submodules/fastapi-env/.env')
 
 from typing import List, Optional, Union
 import uvicorn

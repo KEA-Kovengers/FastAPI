@@ -4,7 +4,7 @@ from PIL import Image
 import json
 import os
 from dotenv import load_dotenv
-load_dotenv('fast_sub/.env')
+load_dotenv('Submodules/fastapi-env/.env')
 
 client = AzureOpenAI(
     api_version="2024-02-01",  
