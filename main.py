@@ -25,7 +25,7 @@ db = client[os.getenv("CLUSTER_NAME")]
 
 origins = [
     "http://localhost",
-    "http://localhost:8000",
+    "http://localhost:3000",
     "*",
 ]
 
