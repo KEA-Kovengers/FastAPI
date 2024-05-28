@@ -7,7 +7,7 @@ load_dotenv('/Submodules/fastapi-env/.env')
 from typing import List, Optional, Union
 import uvicorn
 from fastapi import FastAPI, Header, status
-app = FastAPI()
+app = FastAPI(docs_url='/fastapi/api/docs', openapi_url='/fastapi/api/openapi.json')
 
 from pydantic import BaseModel
 from utils.jwt_service import encode, decode
