@@ -7,6 +7,11 @@ pipeline {
         VERSION = "${env.BUILD_NUMBER}" // Jenkins 빌드 번호를 버전으로 사용합니다.
     }
     stages {
+        stage('Pull Git Submodules') {
+            steps {
+                sh 'git submodule update --init --recursive'
+            }
+        }
         stage('Build Docker images') {
             steps {
                 script {
@@ -34,6 +39,35 @@ pipeline {
                 script {
                     sh 'docker rmi ${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:${VERSION}'
                     sh 'docker rmi registry.hub.docker.com/${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:${VERSION}'
+                }
+            }
+        }
+        stage('Update Kubernetes YAML') {
+            steps {
+                script {
+                    dir('config'){
+                        sshagent(['k8s_git']) {
+                            sh 'mkdir -p ~/.ssh'
+                            sh 'if [ ! -f ~/.ssh/known_hosts ]; then ssh-keyscan github.com >> ~/.ssh/known_hosts; fi'
+                            sh 'rm -rf kubernetes-yaml' // Add this line
+                            sh 'git clone git@github.com:KEA-Kovengers/kubernetes-yaml.git'
+                        }
+                        dir('kubernetes-yaml') {
+                            dir('backend/fastapi-service'){
+                                sh "sed -i 's|${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:.*|${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:${VERSION}|' fastapi-service.yaml"
+                                sh 'git add fastapi-service.yaml'
+                            }
+                            
+                            sh 'git config user.email "keakovengers@gmail.com"'
+                            sh 'git config user.name "kovengers"'
+                            sh 'git add -A'
+                            sh 'git status'
+                            sh 'git diff --cached --exit-code || git commit -m "Update service image tag"'
+                            sshagent(['k8s_git']) {
+                                sh 'git push origin kakao-cloud'
+                            }
+                        }
+                    }
                 }
             }
         }
