@@ -21,10 +21,6 @@ import pymongo
 import redis
 conn = redis.Redis()
 
-# MongoDB에 연결할 클라이언트 생성
-client = pymongo.MongoClient(os.getenv("MONGO_URL"))
-db = client[os.getenv("CLUSTER_NAME")]
-
 origins = [
     "http://localhost",
     "http://localhost:3000",
