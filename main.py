@@ -3,6 +3,8 @@ import json
 import os
 from dotenv import load_dotenv
 load_dotenv('/Submodules/fastapi-env/.env')
+import re
+from elasticsearch import Elasticsearch
 
 from typing import List, Optional, Union
 import uvicorn
@@ -29,6 +31,8 @@ origins = [
     "*",
 ]
 
+es = Elasticsearch(['http://3.36.133.139:9200'])
+
 # CORS 미들웨어 설정
 app.add_middleware(
     CORSMiddleware,
@@ -39,6 +43,17 @@ app.add_middleware(
 )
 
 
+def extract_brace_content(string):
+    # 정규 표현식을 사용하여 중괄호 사이의 내용을 찾습니다.
+    pattern = re.compile(r"\{ .*\} ", re.IGNORECASE)
+    matches = pattern.findall(string)
+    return matches
+
+# JSON 파일에서 쿼리를 읽어오는 함수
+def read_query_from_file(file_path):
+    with open(file_path, "r") as f:
+        query = json.load(f)
+    return query
 
 # api/post/check?postid=2
 @app.get("/api/post/check")
@@ -77,8 +92,11 @@ async def generate_text_api(payload: TextPayload):
 async def modify_spell_api(payload: TextPayload):
     # Access the text from the payload
     text = payload.text
+    print(text)
     generated_text = modify_spell(text)
-    jsonData = json.loads(generated_text.choices[0].message.content)
+    print(generated_text.choices[0].message.content)
+    print(extract_brace_content(generated_text.choices[0].message.content))
+    jsonData = json.loads((generated_text.choices[0].message.content))
 
     return jsonData
 
@@ -96,9 +114,66 @@ async def generate_image_api(payload: TextPayload):
     # Access the text from the payload
     text = payload.text
     image_url = generate_image(text)
+    # print('123')
     # jsonData = json.loads(hashtags.choices[0].message.content)
 
     return image_url
+
+
+
+@app.get("/search_users")
+async def search_users(keyword: str):
+    # JSON 파일에서 쿼리 읽어오기
+    query = read_query_from_file("json/user.json")
+    
+    # 검색어로 쿼리 업데이트
+    query["query"]["bool"]["must"][0]["bool"]["should"][0]["wildcard"]["nick_name"] = "*{}*".format(keyword)
+    query["query"]["bool"]["must"][0]["bool"]["should"][1]["wildcard"]["blog_name"] = "*{}*".format(keyword)
+
+    # Elasticsearch에 쿼리를 보내고 결과를 받음
+    try:
+        result = es.search(index="user.newcord_user_db.users", body=query)
+        res = [{
+            "id": hit["_source"]["id"], 
+            "blog_name": hit["_source"]["blog_name"], 
+            "nick_name": hit["_source"]["nick_name"], 
+            "profile_img": hit["_source"]["profile_img"]
+            } for hit in result["hits"]["hits"]]
+        return res
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# id, blog_name, nick_name, profile_img
+# 데이터 조회 API 엔드포인트 정의
+@app.get("/search_posts")
+async def search_posts(keyword: str):
+    # JSON 파일에서 쿼리 읽어오기
+    query = read_query_from_file("json/post.json")
+    
+    # 검색어로 쿼리 업데이트
+    query["query"]["bool"]["must"][0]["wildcard"]["title"] = "*{}*".format(keyword)
+
+    # Elasticsearch에 쿼리를 보내고 결과를 받음
+    try:
+        result = es.search(index="article.newcord_article_db.posts", body=query)
+
+        res = []
+        for hit in result["hits"]["hits"]:
+            query = read_query_from_file("json/thumbnail.json")
+            query["query"]["bool"]["must"][1]["match"]["post_id"] = hit["_source"]["post_id"]
+            thumbs = es.search(index="article.newcord_article_db.post_thumbnails", body=query)
+            res.append({
+            "post_id": hit["_source"]["post_id"], 
+            "title": hit["_source"]["title"], 
+            "body": hit["_source"]["body"], 
+            "views": hit["_source"]["views"],
+            "thumbnails": [thumb["_source"]["url"] for thumb in thumbs["hits"]["hits"]]
+            })
+
+        return res
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 
 # uvicorn
 if __name__ == '__main__' :

@@ -84,16 +84,16 @@ def modify_spell(sentence):
             {'role': 'system', 'content': '4. Provide the corrected version of the sentence.'},
             {'role': 'system', 'content': '5. Return the result in JSON format.'},
             {'role': 'system', 'content': '6. Speak in Korean.'},
-            {'role': 'user', 'content': '블로그의 내용을 검사하고 JSON 형식으로 반환해주세요.'},
-            {'role': 'user', 'content': '블로그의 내용은 다음과 같다.'},
-            {'role': 'user', 'content': sentence},
             {'role': 'user', 'content': '''
                 **Example Output**:
                 {
                     "sentence": "The dog is palying happily in the prak.",
                     "correct": "The dog is playing happily in the park."
                 }
-             '''}
+             '''},
+            {'role': 'user', 'content': '블로그의 내용을 검사하고 JSON 형식으로 반환해주세요.'},
+            {'role': 'user', 'content': '아래 나오는 내용이 블로그의 내용이다.'},
+            {'role': 'user', 'content': sentence}
     
         ]
     )

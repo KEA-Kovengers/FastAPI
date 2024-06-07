@@ -1,0 +1,23 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "wildcard": {
+            "title": "*<keyword>*"
+          }
+        },
+        {
+          "match": {
+            "status": 0
+          }
+        },
+        {
+          "match": {
+            "__deleted": "false"
+          }
+        }
+      ]
+    }
+  }
+}
