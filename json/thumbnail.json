@@ -1,0 +1,18 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "__deleted": "false"
+          }
+        },
+        {
+          "match": {
+            "post_id": "<post_id>"
+          }
+        }
+      ]
+    }
+  }
+}

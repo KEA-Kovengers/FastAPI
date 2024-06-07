@@ -1,0 +1,29 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "bool": {
+            "should": [
+              {
+                "wildcard": {
+                  "nick_name": "*<keyword>*"
+                }
+              },
+              {
+                "wildcard": {
+                  "blog_name": "*<keyword>*"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "match": {
+            "__deleted": "false"
+          }
+        }
+      ]
+    }
+  }
+}

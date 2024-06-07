@@ -14,3 +14,4 @@ vertexai==1.43.0
 PyJWT==2.8.0
 PyKakao==0.0.7
 openai==1.14.3
+elasticsearch==8.13.2
