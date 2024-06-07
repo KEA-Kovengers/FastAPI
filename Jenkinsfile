@@ -45,7 +45,7 @@ pipeline {
         stage('Update Kubernetes YAML') {
             steps {
                 script {
-                    dir('config'){
+                    dir('Submodules'){
                         sshagent(['k8s_git']) {
                             sh 'mkdir -p ~/.ssh'
                             sh 'if [ ! -f ~/.ssh/known_hosts ]; then ssh-keyscan github.com >> ~/.ssh/known_hosts; fi'
