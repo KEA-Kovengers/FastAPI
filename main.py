@@ -154,16 +154,18 @@ async def search_posts(keyword: str):
         result = es.search(index="article.newcord_article_db.posts", body=query)
 
         res = []
+        # return result
         for hit in result["hits"]["hits"]:
             query = read_query_from_file("json/thumbnail.json")
             query["query"]["bool"]["must"][1]["match"]["post_id"] = hit["_source"]["post_id"]
             thumbs = es.search(index="article.newcord_article_db.post_thumbnails", body=query)
             res.append({
-            "post_id": hit["_source"]["post_id"], 
-            "title": hit["_source"]["title"], 
-            "body": hit["_source"]["body"], 
-            "views": hit["_source"]["views"],
-            "thumbnails": [thumb["_source"]["url"] for thumb in thumbs["hits"]["hits"]]
+                "post_id": hit["_source"]["post_id"], 
+                "title": hit["_source"]["title"], 
+                "body": hit["_source"]["body"], 
+                "views": hit["_source"]["views"],
+                "created_at": hit["_source"]["created_at"],
+                "thumbnails": [{"url": thumb["_source"]["url"], "type": thumb["_source"]["type"]} for thumb in thumbs["hits"]["hits"]]
             })
 
         return res
