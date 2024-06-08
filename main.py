@@ -27,7 +27,6 @@ origins = [
     "*",
 ]
 
-# es = Elasticsearch(['https://0a36f36e29714cbb88a278d0026f4686.us-west-2.aws.found.io:443'])
 es = Elasticsearch(
     os.getenv('es_endpoint'),
     basic_auth=(os.getenv('es_ID'), os.getenv('es_password'))
