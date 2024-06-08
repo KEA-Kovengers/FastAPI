@@ -27,7 +27,10 @@ origins = [
     "*",
 ]
 
-es = Elasticsearch(['http://3.36.133.139:9200'])
+es = Elasticsearch(
+    os.getenv('es_endpoint'),
+    basic_auth=(os.getenv('es_ID'), os.getenv('es_password'))
+)
 
 # CORS 미들웨어 설정
 app.add_middleware(
@@ -128,7 +131,7 @@ async def search_users(keyword: str):
 
     # Elasticsearch에 쿼리를 보내고 결과를 받음
     try:
-        result = es.search(index="user.newcord_user_db.users", body=query)
+        result = es.search(index="user.newcord_user_db.users", body=query, size=30)
         res = [{
             "id": hit["_source"]["id"], 
             "blog_name": hit["_source"]["blog_name"], 
